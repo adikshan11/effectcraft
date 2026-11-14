@@ -10,7 +10,10 @@ PhotoCraft) confine what the agent can reach: files are read only under a read o
 written only under a write root; with no write root nothing is written. Every engine command
 (`execute_command`, `command_run`, each `batch` step) is checked before it runs: its file
 parameters must be absolute paths inside the roots (symbolic links resolved, no `..`), and so must
-any other absolute path in its parameters. Save, Increment and Save and rendering the Render
+any other absolute path in its parameters. On Windows a network path
+(`\\server\share\...`, `\\?\UNC\...`, WebDAV's `\\host@SSL\share\...`), a device path (`\\.\...`) or a
+verbatim path that isn't a disk is refused by its name before anything looks it up, since looking it
+up would contact that host, unless a root is on the same server and share (or the same verbatim prefix); a link whose target is one of those is refused from the link's text, before it is followed. Save, Increment and Save and rendering the Render
 Queue are checked against the files they write (the open project's, the queued outputs);
 `renderQueue.add`, `render.preRender` and `file.createProxy` without an output file need a saved
 project, since an unsaved one's default output would go to the home folder (#2479). In a headless
